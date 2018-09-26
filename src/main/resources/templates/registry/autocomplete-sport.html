@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<body>
+	 	<script type="text/javascript" th:fragment="autocomplete">
+	 		$(document).ready(function() {
+	 			
+	 			$("#search_sport").autocomplete({
+	 				source: function(request, response){
+	 					$.ajax({
+	 						url: "/activity/load-sports/" + request.term,
+	 						dataType: "json",
+	 						data: {
+	 							term: request.term
+	 						},
+	 						success: function(data){
+	 							response($.map(data, function(item){
+	 								return {
+	 									value: item.id,
+	 									label: item.name,
+	 									kcal: item.kcal
+	 									
+	 								};
+	 							}));
+	 						}	 							
+	 					});
+	 				},
+	 				select: function(event, ui){
+	 					items_helper.addActivity(ui.item.value, ui.item.label, ui.item.kcal)
+	 					items_helper.calculateTotalKcal(ui.item.value, ui.item.kcal, 0);
+	 					return false;
+	 				}
+	 			});
+	 			
+	 			$("form").submit(function(){
+	 				$("#templateItemsActivity").remove();
+	 			});
+	 			
+	 		});
+	 		
+	 		var items_helper = {
+	 			addActivity: function(value, label, kcal) {
+	 				
+	 				var line = $("#templateItemsActivity").html();
+ 					
+ 					line = line.replace(/{ID}/g, value);
+ 					line = line.replace(/{NAME}/g, label);
+ 					line = line.replace(/{KCAL}/g, kcal)
+ 					
+ 					$("#loadItemSports tbody").append(line);
+ 					this.calculateTotalKcal(value, kcal, 0);
+	 			},
+ 				calculateTotalKcal: function(id,kcal,distance) {
+ 					$("#total_kcal_" + id).val(parseInt(kcal) * parseInt(distance));	
+ 					this.sumTotalKcalItems();
+ 				},
+ 				calculateSumTotalKcal: function() { 					
+ 					var total = 0;
+ 					$("input[id*=total_kcal_]").each(function(){
+ 						total += parseInt($(this).val()); 						
+ 					})
+ 					$("#sum_total_kcal").val(parseInt(total));
+ 				},
+ 				sumTotalKcalItems: function() {
+ 					var total = 0;
+ 					$('input[id^="total_kcal_"]').each(function(){
+ 						total += parseInt($(this).val());
+ 					});
+ 					$("#sum_total").html(parseInt(total));
+ 				},
+ 				deleteItem: function(id) {  					
+ 					$("#row_" + id).remove();
+ 					this.calculateSumTotalKcal();
+ 					this.sumTotalKcalItems();
+ 				}
+	 		}
+	 	</script>
+	</body>
+</html>

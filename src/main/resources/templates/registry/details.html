@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="base/template :: head"></head>
+	<body>
+		<header th:replace="base/template :: header"></header>
+		<div class="container py-4">
+			<div class="card">
+				<div class="card-header" th:text="${title}"></div>
+				<div class="card-body">
+					<div class="card-title">
+						<a class="btn btn-secondary btn-xs" th:href="@{'/user/dashboard'}" th:text="'Return'"></a>
+						<a class="btn btn-info btn-xs" th:href="@{'/activity/form/' + ${registry.id}}" th:text="'New Activity'"></a>
+					</div>
+				
+					<ul class="list-group">
+						<li class="list-group-item list-group-item-success" th:text="'Activities Details'">
+						<li class="list-group-item" th:text="${registry.date}"></li>
+						<li class="list-group-item" th:text="${registry.description}"></li>
+						<li class="list-group-item" th:text="${registry.observation}"></li>
+						<li class="list-group-item" th:text="${registry.getTotalDuration()}"></li>
+						<li class="list-group-item" th:text="${registry.getTotalEffort()}"></li>
+					</ul>
+					
+					<div th:if="${#lists.isEmpty(registry.activities)}" class="alert alert-info my-4">There isn't any activity yet!</div>
+					
+					<div class="card-title my-4">						
+						<h4 th:if="${not #lists.isEmpty(registry.activities)}">Activities list</h4>
+					</div>	
+									
+					<table th:if="${not #lists.isEmpty(registry.activities)}" class="table table-bordered table-striped my-4">
+						<thead class="thead-inverse">
+							<tr>
+								<th>Name</th>
+								<th>Distance</th>
+								<th>Duration</th>
+								<th>Kcal</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="activity : ${registry.activities}">
+								<td th:text="${activity.sport.name}"></td>
+								<td th:text="${activity.distance}"></td>
+								<td th:text="${activity.getDurationRepresentation()}"></td>
+								<td th:text="${activity.calculateEffort()}"></td>
+								<td><a class="btn btn-danger btn-xs" th:href="@{/activity/delete/} + ${activity.id}" onclick="return confirm('Are you sure?')">X</a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<footer th:replace="base/template :: footer"></footer>
+	</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<body>
+		<table th:fragment="itemActivity" class="d-none">
+			<tbody id="templateItemsActivity">
+				<tr id="row_{ID}">
+					<td class="d-none">
+						<input type="hidden" value="{ID}" name="item_id[]">
+					</td>
+					<td>{NAME}</td>
+					<td>
+						<input type="number" name="distante[]" id="distance_{ID}" class="form-control col-sm-6"
+							value="0.00" step=".01" 
+							onchange="items_helper.calculateTotalKcal({ID},{KCAL},this.value)"
+							onblur="items_helper.calculateSumTotalKcal()">
+					</td>
+					<td>
+						<input type="text" name="time[]" id="time_{ID}" class="form-control col-sm-6" 
+							placeholder="00:00:00" value="00:00:00" pattern="^\d{2,}:(?:[0-5]\d):(?:[0-5]\d)$" >
+					</td>
+					<td>
+						<input type="number" id="total_kcal_{ID}" name="total_kcal[]" class="form-control col-sm-6" 
+							value="0"/>
+					</td>
+					<td>
+						<a href="#" class="btn btn-danger btn-xs" onclick="items_helper.deleteItem({ID})">X</a>
+					</td>
+				</tr>				
+			</tbody>
+		</table>					
+	</body>
+</html>
